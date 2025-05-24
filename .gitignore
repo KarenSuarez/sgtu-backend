@@ -1,0 +1,78 @@
+# Dependencias de Node.js
+node_modules/
+
+# Archivos de log
+*.log
+logs/
+
+# Variables de entorno
+# .env
+# .env.local
+# .env.development
+# .env.development.local
+# .env.test
+# .env.test.local
+# .env.production
+# .env.production.local
+
+# Archivos de compilación y build
+build/
+dist/
+out/
+.next/
+
+# Archivos de depuración y caché
+*.debug
+*.vsps
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*.swo
+*.tsd
+typings/
+
+# Paquetes empaquetados para despliegue
+*.tar.gz
+*.zip
+
+# Archivos específicos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos generados por herramientas
+coverage/
+report/
+test-report/
+
+# Docker
+docker-compose.override.yml
+
+# Ignorar carpetas de cada microservicio individualmente (redundante pero explícito)
+api-gateway/node_modules
+api-gateway/build
+api-gateway/dist
+
+auth-service/node_modules
+auth-service/build
+auth-service/dist
+auth-service/migrations/*.js # Ignorar archivos .js en migraciones (si se generan)
+
+tutoria-service/node_modules
+tutoria-service/build
+tutoria-service/dist
+
+notification-service/node_modules
+notification-service/build
+notification-service/dist
+
+report-service/node_modules
+report-service/build
+report-service/dist
+
+audit-service/node_modules
+audit-service/build
+audit-service/dist
