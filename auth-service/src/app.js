@@ -2,7 +2,9 @@ const express = require('express');
 const sequelize = require('./config/database.config');
 const authRoutes = require('./routes/auth.routes');
 const errorMiddleware = require('../shared/middleware/error.middleware');
+
 const moment = require("moment");
+const timestamp = moment().format("YYYY-MM-DD HH:mm:ss");
 require('dotenv').config();
 
 const app = express();
@@ -18,7 +20,5 @@ app.use('/api/auth', authRoutes);
 app.use(errorMiddleware);
 
 const PORT = process.env.PORT || 3001;
-logMessage = `${moment().format(
-      "YYYY-MM-DD HH:mm:ss"
-    )} Auth service running on port ${PORT}`;
+logMessage = `${timestamp} Auth service running on port ${PORT}`;
 app.listen(PORT, () => console.log(logMessage));
