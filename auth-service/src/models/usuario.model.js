@@ -1,7 +1,7 @@
 const { DataTypes, Model } = require('sequelize');
 const sequelize = require('../config/database.config');
 
-class Usuario extends Model {}
+class Usuario extends Model { }
 
 Usuario.init({
   id: {
@@ -22,6 +22,19 @@ Usuario.init({
   nombre: {
     type: DataTypes.STRING,
     allowNull: false
+  },
+  apellido: { // 🔽 Nuevo campo
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  codigo: { // 🔽 Nuevo campo
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true
+  },
+  rol: {
+    type: DataTypes.ENUM('estudiante', 'profesor'),
+    allowNull: false
   }
 }, {
   sequelize,
@@ -29,4 +42,3 @@ Usuario.init({
 });
 
 module.exports = Usuario;
-
