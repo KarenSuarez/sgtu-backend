@@ -20,7 +20,10 @@ router.post(
   [
     body('email').isEmail(),
     body('password').isLength({ min: 6 }),
-    body('nombre').notEmpty().withMessage('El nombre es obligatorio')
+    body('nombre').notEmpty().withMessage('El nombre es obligatorio'),
+    body('apellido').notEmpty().withMessage('El apellido es obligatorio'), // nuevo
+    body('codigo').notEmpty().withMessage('El código es obligatorio'), // nuevo
+    body('rol').isIn(['estudiante', 'profesor']).withMessage('Rol inválido')
   ],
   (req, res, next) => {
     const errors = validationResult(req);
