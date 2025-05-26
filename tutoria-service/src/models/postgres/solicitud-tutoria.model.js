@@ -10,10 +10,12 @@ const SolicitudTutoria = sequelize.define('SolicitudTutoria', {
   estudianteId: {
     type: DataTypes.UUID,
     allowNull: false,
+    references: { model: 'usuarios', key: 'id' }
   },
   asignaturaId: {
     type: DataTypes.UUID,
     allowNull: false,
+    references: { model: 'asignaturas', key: 'id' }
   },
   mensaje: {
     type: DataTypes.TEXT,

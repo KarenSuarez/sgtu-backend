@@ -2,17 +2,18 @@ const solicitudService = require('../services/solicitud.service');
 
 exports.crearSolicitud = async (req, res, next) => {
   try {
-    const solicitud = await solicitudService.crearSolicitud(req.body);
+    const estudianteId = req.user.id;
+    const { asignaturaId, mensaje } = req.body;
+    const solicitud = await solicitudService.crearSolicitud({ estudianteId, asignaturaId, mensaje });
     res.status(201).json(solicitud);
-  } catch (error) {
-    next(error);
+  } catch (err) {
+    next(err);
   }
 };
 
 exports.obtenerSolicitudesPorEstudiante = async (req, res, next) => {
   try {
-    const { estudianteId } = req.params;
-    const solicitudes = await solicitudService.obtenerSolicitudesPorEstudiante(estudianteId);
+    const solicitudes = await solicitudService.obtenerSolicitudesPorEstudiante(req.user.id);
     res.json(solicitudes);
   } catch (error) {
     next(error);

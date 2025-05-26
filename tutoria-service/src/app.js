@@ -1,60 +1,54 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const cors = require('cors');
+require('dotenv').config();
 
-// DB connections
-const sequelize = require('./config/postgres.config');
-const connectMongo = require('./config/mongo.config');
+const postgres = require('./config/postgres.config');
+const mongo = require('./config/mongo.config');
 
-// Importar rutas
-const tutoriaRoutes = require('./routes/tutoria.routes');
-const solicitudRoutes = require('./routes/solicitud.routes');
-const asignaturaRoutes = require('./routes/asignatura.routes');
-const horarioRoutes = require('./routes/horario.routes');
-const calendarioRoutes = require('./routes/calendario.routes');
-
-// Middlewares
+// Importar rutas y middleware
+const authMiddleware = require('./middleware/auth.middleware');
 const errorMiddleware = require('./middleware/error.middleware');
-const authMiddleware = require('./middleware/auth.middleware');  // <- Importa tu middleware JWT
+const asignaturaRoutes = require('./routes/asignatura.routes');
+const calendarioRoutes = require('./routes/calendario.routes');
+const horarioRoutes = require('./routes/horario.routes');
+const solicitudRoutes = require('./routes/solicitud.routes');
+const tutoriaRoutes = require('./routes/tutoria.routes');
+
+// Consumidor Kafka
+const { connectConsumer } = require('./kafka/consumers/user-events.consumer');
 
 const app = express();
-
-app.use(cors());
-app.use(bodyParser.json());
-
-// Rutas públicas (ejemplo: asignatura, horario y calendario no protegidas)
-app.use('/asignatura', asignaturaRoutes);
-app.use('/horario', horarioRoutes);
-app.use('/calendario', calendarioRoutes);
-
-// Rutas protegidas con autenticación JWT
-app.use('/tutoria', authMiddleware, tutoriaRoutes);
-app.use('/solicitud', authMiddleware, solicitudRoutes);
-
-// Middleware de error
-app.use(errorMiddleware);
-
-async function startServer() {
+app.use(express.json());
+app.use('/api/usuario-asignaturas', require('./routes/usuario-asignatura.routes'));
+(async () => {
   try {
-    await sequelize.authenticate();
-    console.log('📗 Conectado a PostgreSQL');
+    // Conectar bases de datos
+    // Conectar bases de datos PRIMERO
+    await postgres.authenticate();
+    await postgres.sync({ alter: true });
+    await mongo.connect();
+    console.log('✅ Bases de datos conectadas');
 
-    await sequelize.sync({ alter: true });
-    console.log('🔄 Tablas sincronizadas con Sequelize');
+    // Conectar consumidor Kafka
+    await connectConsumer();
+    // Rutas públicas
+    app.use('/api/calendario', calendarioRoutes);
 
-    await connectMongo();
-    console.log('📘 Conectado a MongoDB');
+    // Middleware JWT
+    app.use(authMiddleware);
 
-    const PORT = process.env.PORT || 4002;  // Asegúrate de que coincida con tu .env
-    app.listen(PORT, () => {
-      console.log(`🚀 Tutoria Service running on port ${PORT}`);
-    });
-  } catch (error) {
-    console.error('❌ Error al iniciar el servidor:', error);
+    // Rutas protegidas
+    app.use('/api/asignaturas', asignaturaRoutes);
+    app.use('/api/horario', horarioRoutes);
+    app.use('/api/solicitud', solicitudRoutes);
+    app.use('/api/tutorias', tutoriaRoutes);
+
+    // Middleware de errores
+    app.use(errorMiddleware);
+
+    const PORT = process.env.PORT || 3002;
+    app.listen(PORT, () => console.log(`🚀 Tutoria-service corriendo en el puerto ${PORT}`));
+  } catch (err) {
+    console.error('❌ Error al iniciar la app:', err.message);
     process.exit(1);
   }
-}
-
-startServer();
-
-module.exports = app;
+})();

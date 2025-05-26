@@ -1,13 +1,20 @@
+// src/config/mongo.config.js
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const connectMongo = async () => {
-  try {
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log('Conectado a MongoDB');
-  } catch (error) {
-    console.error('Error MongoDB:', error);
-  }
-};
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/sgtu_tutorias';
 
-module.exports = connectMongo;
+async function connect() {
+  try {
+    await mongoose.connect(MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('📘 Conectado a MongoDB');
+  } catch (error) {
+    console.error('❌ Error conectando a MongoDB:', error.message);
+    throw error;  // para que tu app.js lo capture y detenga el arranque si falla
+  }
+}
+
+module.exports = { connect };

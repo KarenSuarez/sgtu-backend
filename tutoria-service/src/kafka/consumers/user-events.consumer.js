@@ -1,35 +1,40 @@
 // src/kafka/consumers/user-events.consumer.js
-const kafka = require('../../config/kafka.config');
+const { kafka } = require('../../config/kafka.config'); // ✅ debe importar { kafka }
+const db = require('../../models/postgres');
+
 const consumer = kafka.consumer({ groupId: 'tutoria-service-group' });
-const { Usuario } = require('../models/postgres'); 
-// asume que tu index.js en models/postgres exporta todos los modelos, incluido Usuario
 
-const TOPIC = 'user-events';
-
-async function connectConsumer() {
+const connectConsumer = async () => {
   await consumer.connect();
-  await consumer.subscribe({ topic: TOPIC, fromBeginning: false });
+  await consumer.subscribe({ topic: 'user-events', fromBeginning: false });
 
   await consumer.run({
     eachMessage: async ({ message }) => {
-      const { event, data } = JSON.parse(message.value.toString());
-      console.log(`📥 [Tutoria consumer] Evento ${event}`, data);
+      const parsed = JSON.parse(message.value.toString());
+      console.log('📥 [user-events] Mensaje recibido:', parsed);
+
+      const { event, data } = parsed;
 
       if (event === 'USER_CREATED') {
-        // Upsert: crea o actualiza el usuario en tu BD de tutoria
-        await Usuario.upsert({
-          id: data.id,
-          email: data.email,
-          nombre: data.nombre,
-          apellido: data.apellido,
-          codigo: data.codigo,
-          rol: data.rol
-        });
-      }
-    }
-  });
+        const { id, nombre, apellido, email, codigo, rol } = data;
 
-  console.log('✅ Tutoria-service Kafka consumer conectado');
-}
+        try {
+          const [user, created] = await db.Usuario.findOrCreate({
+            where: { id },
+            defaults: { nombre, apellido, email, codigo, rol }
+          });
+
+          if (created) {
+            console.log(`✅ Usuario creado en tutoria-service: ${email}`);
+          } else {
+            console.log(`ℹ️ Usuario ya existía: ${email}`);
+          }
+        } catch (error) {
+          console.error('❌ Error al guardar usuario:', error);
+        }
+      }
+    },
+  });
+};
 
 module.exports = { connectConsumer };

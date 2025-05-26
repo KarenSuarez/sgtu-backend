@@ -10,6 +10,7 @@ const HorarioDisponible = sequelize.define('HorarioDisponible', {
   docenteId: {
     type: DataTypes.UUID,
     allowNull: false,
+    references: { model: 'usuarios', key: 'id' }
   },
   dia: {
     type: DataTypes.STRING,

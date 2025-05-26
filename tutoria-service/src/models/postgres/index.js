@@ -1,28 +1,44 @@
-const sequelize = require('../../config/postgres.config');
+// src/models/postgres/index.js
+const sequelize          = require('../../config/postgres.config');
 
-// Importar modelos
-const Asignatura = require('./asignatura.model');
-const HorarioDisponible = require('./horario-disponible.model');
-const SolicitudTutoria = require('./solicitud-tutoria.model');
-const Tutoria = require('./tutoria.model');
+// FACTORIES (hay que pasarles sequelize):
+const Usuario            = require('./usuario.model')(sequelize);
+const UsuarioAsignatura  = require('./usuario-asignatura.model')(sequelize);
 
-// Asociaciones
+// ESTÁTICOS (ya llaman a define internamente):
+const Asignatura         = require('./asignatura.model');
+const SolicitudTutoria   = require('./solicitud-tutoria.model');
+const Tutoria            = require('./tutoria.model');
+const HorarioDisponible  = require('./horario-disponible.model');
 
-// Asignatura tiene muchas solicitudes
-Asignatura.hasMany(SolicitudTutoria, { foreignKey: 'asignaturaId' });
-SolicitudTutoria.belongsTo(Asignatura, { foreignKey: 'asignaturaId' });
+/** Relaciones **/
 
-// Solicitud tiene muchas tutorías
-SolicitudTutoria.hasMany(Tutoria, { foreignKey: 'solicitudId' });
-Tutoria.belongsTo(SolicitudTutoria, { foreignKey: 'solicitudId' });
+// Usuario ↔ SolicitudTutoria
+Usuario.hasMany(SolicitudTutoria, { foreignKey: 'estudianteId', as: 'solicitudes' });
+SolicitudTutoria.belongsTo(Usuario,   { foreignKey: 'estudianteId', as: 'estudiante' });
 
-// HorarioDisponible no tiene relaciones directas por ahora
-// Se podría relacionar con un Docente (UUID), pero como es externo, solo guardamos el ID
+// Asignatura ↔ SolicitudTutoria
+Asignatura.hasMany(SolicitudTutoria,  { foreignKey: 'asignaturaId', as: 'solicitudes' });
+SolicitudTutoria.belongsTo(Asignatura,{ foreignKey: 'asignaturaId', as: 'asignatura' });
+
+// SolicitudTutoria ↔ Tutoria
+SolicitudTutoria.hasMany(Tutoria,     { foreignKey: 'solicitudId', as: 'tutorias' });
+Tutoria.belongsTo(SolicitudTutoria,   { foreignKey: 'solicitudId', as: 'solicitud' });
+
+// Usuario (docente) ↔ Tutoria
+Usuario.hasMany(Tutoria,   { foreignKey: 'docenteId', as: 'tutoriasDictadas' });
+Tutoria.belongsTo(Usuario, { foreignKey: 'docenteId', as: 'docente' });
+
+// Usuario ↔ Asignatura (many-to-many)
+Usuario.belongsToMany(Asignatura, { through: UsuarioAsignatura, as: 'asignaturas' });
+Asignatura.belongsToMany(Usuario, { through: UsuarioAsignatura, as: 'estudiantes' });
 
 module.exports = {
   sequelize,
+  Usuario,
   Asignatura,
   HorarioDisponible,
   SolicitudTutoria,
   Tutoria,
+  UsuarioAsignatura,
 };

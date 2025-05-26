@@ -10,10 +10,12 @@ const Tutoria = sequelize.define('Tutoria', {
   solicitudId: {
     type: DataTypes.UUID,
     allowNull: false,
+    references: { model: 'solicitudes_tutoria', key: 'id' }
   },
   docenteId: {
     type: DataTypes.UUID,
     allowNull: false,
+    references: { model: 'usuarios', key: 'id' }
   },
   fecha: {
     type: DataTypes.DATEONLY,

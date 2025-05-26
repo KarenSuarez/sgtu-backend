@@ -2,18 +2,18 @@ const tutoriaService = require('../services/tutoria.service');
 
 exports.crearTutoria = async (req, res, next) => {
   try {
-    const data = req.body; // aquí espera los datos para crear la tutoría
-    const nuevaTutoria = await tutoriaService.crearTutoria(data);
-    res.status(201).json(nuevaTutoria);
-  } catch (error) {
-    next(error);
+    const docenteId = req.user.id;
+    const data = { ...req.body, docenteId };
+    const tutoria = await tutoriaService.crearTutoria(data);
+    res.status(201).json(tutoria);
+  } catch (err) {
+    next(err);
   }
 };
 
 exports.obtenerTutoriasPorDocente = async (req, res, next) => {
   try {
-    const { docenteId } = req.params;
-    const tutorias = await tutoriaService.obtenerTutoriasPorDocente(docenteId);
+    const tutorias = await tutoriaService.obtenerTutoriasPorDocente(req.user.id);
     res.json(tutorias);
   } catch (error) {
     next(error);

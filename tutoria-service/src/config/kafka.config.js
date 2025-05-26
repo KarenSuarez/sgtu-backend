@@ -1,8 +1,9 @@
 // src/config/kafka.config.js
 const { Kafka } = require('kafkajs');
-require('dotenv').config();
 
-module.exports = new Kafka({
+const kafka = new Kafka({
   clientId: 'tutoria-service',
-  brokers: [process.env.KAFKA_BROKER]
+  brokers: [process.env.KAFKA_BROKER || 'localhost:9092'],
 });
+
+module.exports = { kafka };
