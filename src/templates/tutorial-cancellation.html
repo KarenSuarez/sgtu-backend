@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutoría Cancelada o Rechazada - SGTU</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+        .header {
+            background-color: #D32F2F; /* Rojo para cancelación/rechazo */
+            color: #ffffff;
+            padding: 25px 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            border-bottom: 5px solid rgb(12, 16, 19); /* Azul oscuro UPTC */
+        }
+        .content {
+            padding: 30px;
+            font-size: 16px;
+            color: #333333;
+        }
+        .content p {
+            margin-bottom: 15px;
+        }
+        .content ul {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+            background-color: #f9f9f9;
+            border-left: 5px solid #F5BA00; /* Amarillo UPTC */
+            padding: 15px 20px;
+            border-radius: 4px;
+        }
+        .content ul li {
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .content ul li span {
+            font-weight: normal;
+            color: #555555;
+        }
+        .footer {
+            background-color: rgb(12, 16, 19); /* Azul oscuro UPTC */
+            color: #ffffff;
+            font-size: 12px;
+            text-align: center;
+            padding: 15px 20px;
+        }
+        .button-link {
+            display: inline-block;
+            background-color: #F5BA00;
+            color: #1A1A1A;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            Tutoría Cancelada o Solicitud Rechazada
+        </div>
+        <div class="content">
+            <p>Estimado/a usuario,</p>
+            <p>Te informamos sobre un cambio en tu tutoría o solicitud:</p>
+            <ul>
+                <li><strong>Asignatura:</strong> <span>{{subjectName}}</span></li>
+                <li><strong>Docente:</strong> <span>{{teacherName}}</span></li>
+                <li><strong>Estudiante:</strong> <span>{{studentName}}</span></li>
+                <li><strong>Fecha:</strong> <span>{{date}}</span></li>
+                <li><strong>Hora:</strong> <span>{{time}}</span></li>
+            </ul>
+            <p><strong>Motivo:</strong> <span>{{rejectionReason || cancellationReason || 'No especificado.'}}</span></p>
+            <p>Lamentamos cualquier inconveniente que esto pueda causar.</p>
+            <p style="text-align: center;">
+                <a href="[LINK_A_PLATAFORMA]" class="button-link">Ir a SGTU</a>
+            </p>
+        </div>
+        <div class="footer">
+            <p>Este es un mensaje automático enviado por el {{systemName}}.</p>
+            <p>&copy; {{systemName}} - Universidad Pedagógica y Tecnológica de Colombia</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,79 @@
+# docker-compose.yml
+version: '3.8' # Versión de Docker Compose
+
+services:
+  # Servicio de PostgreSQL
+  postgres:
+    image: postgres:13 # Versión de la imagen de PostgreSQL
+    container_name: sgtu_postgres
+    environment:
+      POSTGRES_DB: ${DB_PG_DATABASE} # Usa la variable del .env
+      POSTGRES_USER: ${DB_PG_USER}
+      POSTGRES_PASSWORD: ${DB_PG_PASSWORD}
+    ports:
+      - "5432:5432" # Mapea el puerto 5432 del host al 5432 del contenedor
+    volumes:
+      - pgdata:/var/lib/postgresql/data # Persistencia de datos de PostgreSQL
+
+  # Servicio de MongoDB
+  mongodb:
+    image: mongo:latest # Última versión estable de MongoDB
+    container_name: sgtu_mongodb
+    ports:
+      - "27017:27017" # Mapea el puerto 27017 del host al 27017 del contenedor
+    volumes:
+      - mongo_data:/data/db # Persistencia de datos de MongoDB
+
+  # Servicio de RabbitMQ
+  rabbitmq:
+    image: rabbitmq:3-management-alpine # Imagen con interfaz de gestión
+    container_name: sgtu_rabbitmq
+    ports:
+      - "5672:5672" # Puerto de protocolo AMQP
+      - "15672:15672" # Puerto de la interfaz de gestión (accede en http://localhost:15672)
+    environment:
+      RABBITMQ_DEFAULT_USER: guest # Usuario por defecto
+      RABBITMQ_DEFAULT_PASS: guest # Contraseña por defecto
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq # Persistencia de datos de RabbitMQ
+
+  # Servicio del Backend Node.js
+  backend:
+    build: . # Construye la imagen usando el Dockerfile en el directorio actual
+    container_name: sgtu_backend
+    ports:
+      - "3000:3000" # Mapea el puerto 3000 del host al 3000 del contenedor
+    environment:
+      # Pasa las variables de entorno al contenedor del backend desde el archivo .env del host
+      # Docker Compose cargará automáticamente las variables de un archivo .env si está en el mismo directorio
+      # No necesitas listar todas las variables aquí si las tienes en .env y Docker Compose lo carga.
+      # Sin embargo, listar las esenciales hace explícita la dependencia.
+      DB_PG_USER: ${DB_PG_USER}
+      DB_PG_HOST: postgres # Nombre del servicio de PostgreSQL en Docker Compose
+      DB_PG_DATABASE: ${DB_PG_DATABASE}
+      DB_PG_PASSWORD: ${DB_PG_PASSWORD}
+      DB_PG_PORT: 5432 # El puerto interno del contenedor de Postgres
+      DB_PG_SSL: ${DB_PG_SSL} # Para entorno local, probablemente 'false'
+      RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672 # Nombre del servicio de RabbitMQ
+      DB_MONGO_URI: mongodb://mongodb:27017/${DB_MONGO_DATABASE_NAME} # Nombre del servicio de MongoDB y nombre de la DB
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN}
+      EMAIL_SERVICE: ${EMAIL_SERVICE}
+      EMAIL_USER: ${EMAIL_USER}
+      EMAIL_PASS: ${EMAIL_PASS}
+      EMAIL_FROM_NAME: ${EMAIL_FROM_NAME}
+    depends_on:
+      - postgres # El backend depende de que PostgreSQL esté levantado
+      - mongodb  # El backend depende de que MongoDB esté levantado
+      - rabbitmq # El backend depende de que RabbitMQ esté levantado
+    volumes:
+      - .:/app # Monta el directorio actual del host en /app dentro del contenedor para desarrollo
+      - /app/node_modules # Evita que los node_modules del host sobrescriban los del contenedor
+    # Comando de inicio del backend (usando npm start si está definido en package.json)
+    command: npm start # Usará el script 'start' definido en package.json
+
+# Definición de volúmenes para persistencia de datos
+volumes:
+  pgdata:
+  mongo_data:
+  rabbitmq_data:

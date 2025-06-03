@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recordatorio de Tutoría - SGTU</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e0e0e0;
+        }
+        .header {
+            background-color: #F5BA00; /* Amarillo UPTC */
+            color: #1A1A1A;
+            padding: 25px 20px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            border-bottom: 5px solid rgb(12, 16, 19); /* Azul oscuro UPTC */
+        }
+        .content {
+            padding: 30px;
+            font-size: 16px;
+            color: #333333;
+        }
+        .content p {
+            margin-bottom: 15px;
+        }
+        .content ul {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+            background-color: #f9f9f9;
+            border-left: 5px solid #F5BA00;
+            padding: 15px 20px;
+            border-radius: 4px;
+        }
+        .content ul li {
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .content ul li span {
+            font-weight: normal;
+            color: #555555;
+        }
+        .footer {
+            background-color: rgb(12, 16, 19); /* Azul oscuro UPTC */
+            color: #ffffff;
+            font-size: 12px;
+            text-align: center;
+            padding: 15px 20px;
+        }
+        .button-link {
+            display: inline-block;
+            background-color: #F5BA00;
+            color: #1A1A1A;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            Recordatorio de Tutoría
+        </div>
+        <div class="content">
+            <p>Estimado/a usuario,</p>
+            <p>Este es un recordatorio de tu próxima sesión de tutoría que está a punto de realizarse.</p>
+            <p><strong>Detalles de la Tutoría:</strong></p>
+            <ul>
+                <li><strong>Asignatura:</strong> <span>{{subjectName}}</span></li>
+                <li><strong>Docente:</strong> <span>{{teacherName}}</span></li>
+                <li><strong>Estudiante:</strong> <span>{{studentName}}</span></li>
+                <li><strong>Fecha:</strong> <span>{{date}}</span></li>
+                <li><strong>Hora:</strong> <span>{{time}}</span></li>
+            </ul>
+            <p>Por favor, asegúrate de estar listo/a y unirte a tiempo.</p>
+            <p style="text-align: center;">
+                <a href="[LINK_A_PLATAFORMA]" class="button-link">Acceder a SGTU</a>
+            </p>
+            <p>¡Te deseamos una productiva sesión!</p>
+        </div>
+        <div class="footer">
+            <p>Este es un mensaje automático enviado por el {{systemName}}.</p>
+            <p>&copy; {{systemName}} - Universidad Pedagógica y Tecnológica de Colombia</p>
+        </div>
+    </div>
+</body>
+</html>
