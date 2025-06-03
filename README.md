@@ -1,7 +1,5 @@
 # Sistema de Gestión de Tutorías Universitarias (SGTU) - Backend
 
-# University Tutoring Management System (SGTU) - Backend
-
 ## 🚀 Overview
 
 The **University Tutoring Management System (SGTU)** is a web-based platform designed to enhance the organization and traceability of academic tutoring sessions. It streamlines interaction between students and teachers by automating tutoring requests, scheduling, tracking, and notifications.
@@ -61,7 +59,7 @@ This repository contains the **backend services**, built with **Node.js** and **
 ### Setup (Docker)
 
 ```bash
-git clone <YOUR_REPO_URL>
+git clone https://github.com/KarenSuarez/sgtu-backend
 cd sgtu-backend
 cp .env.example .env  # Fill in the environment variables
 docker-compose up --build -d
